@@ -37,7 +37,7 @@ defmodule SwedbankpayCheckout.MixProject do
   defp package() do
     [
       name: "swedbankpay_checkout",
-      licences: ["MIT"],
+      licenses: ["MIT"],
       links: %{"GitHub" => "https://github.com/hooplab/swedbank-pay-checkout-elixir"}
     ]
   end
