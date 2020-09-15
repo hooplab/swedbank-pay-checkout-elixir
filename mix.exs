@@ -1,9 +1,9 @@
-defmodule SwedpayCheckout.MixProject do
+defmodule SwedbankpayCheckout.MixProject do
   use Mix.Project
 
   def project do
     [
-      app: :swedpay_checkout,
+      app: :swedbankpay_checkout,
       version: "0.1.0",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
@@ -23,6 +23,18 @@ defmodule SwedpayCheckout.MixProject do
       {:poison, "~> 3.1"},
       {:inflex, "~> 2.0.0"},
       {:jason, "~> 1.2", only: :test}
+    ]
+  end
+
+  defp description() do
+    "An elixir SDK built on Tesla for interacting with swedbank's checkout APIs, not official nor endorsed by swedbank."
+  end
+
+  defp package() do
+    [
+      name: "swedbankpay_checkout",
+      licences: ["MIT"],
+      links: %{"GitHub" => "https://github.com/hooplab/swedbank-pay-checkout-elixir"}
     ]
   end
 end
