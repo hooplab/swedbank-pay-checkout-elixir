@@ -1,12 +1,12 @@
-defmodule SwedpayCheckoutTest do
+defmodule SwedbankpayCheckoutTest do
   use ExUnit.Case
-  doctest SwedpayCheckout
+  doctest SwedbankpayCheckout
   import Tesla.Mock
   require Logger
 
   defp create_client(),
     do:
-      SwedpayCheckout.create_client(
+      SwedbankpayCheckout.create_client(
         "http://bears.gov",
         "WITH_ARMS_WIDE_TOKAN",
         Tesla.Mock
@@ -20,7 +20,7 @@ defmodule SwedpayCheckoutTest do
   test "parsing the example post consumers response" do
     client = create_client()
 
-    request_body = %SwedpayCheckout.Client.Psp.Consumers.PostRequest{
+    request_body = %SwedbankpayCheckout.Client.Psp.Consumers.PostRequest{
       operation: :"initiate-consumer-session",
       language: :"nb-NO",
       shipping_address_restricted_to_country_codes: ["NO"]
@@ -50,10 +50,10 @@ defmodule SwedpayCheckoutTest do
         })
     end)
 
-    resp = SwedpayCheckout.Client.Psp.Consumers.post(client, request_body)
+    resp = SwedbankpayCheckout.Client.Psp.Consumers.post(client, request_body)
 
     {:ok,
-     %SwedpayCheckout.Client.Psp.Consumers.PostResponse{
+     %SwedbankpayCheckout.Client.Psp.Consumers.PostResponse{
        :token => token,
        :operations => operations
      }} = resp
@@ -61,12 +61,12 @@ defmodule SwedpayCheckoutTest do
     assert token == "7e380fbb3196ea76cc45814c1d99d59b66db918ce2131b61f585645eff364871"
 
     [
-      %SwedpayCheckout.Model.Operation{
+      %SwedbankpayCheckout.Model.Operation{
         method: method1,
         href: href1,
         content_type: content_type1
       },
-      %SwedpayCheckout.Model.Operation{
+      %SwedbankpayCheckout.Model.Operation{
         method: method2,
         href: href2,
         content_type: content_type2
@@ -90,8 +90,8 @@ defmodule SwedpayCheckoutTest do
   test "parsing the example post payment order response" do
     client = create_client()
 
-    request_body = %SwedpayCheckout.Client.Psp.PaymentOrders.PostRequest{
-      payment_order: %SwedpayCheckout.Client.Psp.PaymentOrders.PaymentOrderRequest{
+    request_body = %SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest{
+      payment_order: %SwedbankpayCheckout.Client.Psp.PaymentOrders.PaymentOrderRequest{
         operation: :Purchase,
         currency: :NOK,
         amount: 1500,
@@ -101,7 +101,7 @@ defmodule SwedpayCheckoutTest do
         language: :"nb-NO",
         instrument: nil,
         generate_recurrence_token: true,
-        urls: %SwedpayCheckout.Client.Psp.PaymentOrders.Urls{
+        urls: %SwedbankpayCheckout.Client.Psp.PaymentOrders.Urls{
           host_urls: ["https://hw.no", "https://tek.no"],
           complete_url: "https://example.com/payment-completed",
           cancel_url: "https://example.com/payment-canceled",
@@ -110,7 +110,7 @@ defmodule SwedpayCheckoutTest do
           terms_of_service_url: "https://example.com/termsandconditoons.pdf",
           logo_url: "https://example.com/logo.png"
         },
-        payee_info: %SwedpayCheckout.Client.Psp.PaymentOrders.PayeeInfo{
+        payee_info: %SwedbankpayCheckout.Client.Psp.PaymentOrders.PayeeInfo{
           payee_id: "5cabf558-5283-482f-b252-4d58e06f6f3b",
           payee_reference: "AB832",
           payee_name: "Merchant1",
@@ -118,14 +118,14 @@ defmodule SwedpayCheckoutTest do
           order_reference: "or-123456",
           subsite: "MySubsite"
         },
-        payer: %SwedpayCheckout.Client.Psp.PaymentOrders.Payer{
+        payer: %SwedbankpayCheckout.Client.Psp.PaymentOrders.Payer{
           consumer_profile_ref: "5a17c24e-d459-4567-bbad-aa0f17a76119",
           email: "olivia.nyhuus@payex.com",
           msisdn: "+4798765432",
           work_phone_number: "+4787654321",
           home_phone_number: "+4776543210"
         },
-        order_items: %SwedpayCheckout.Client.Psp.PaymentOrders.OrderItem{
+        order_items: %SwedbankpayCheckout.Client.Psp.PaymentOrders.OrderItem{
           reference: "P1",
           name: "Product1",
           type: :PRODUCT,
@@ -142,7 +142,7 @@ defmodule SwedpayCheckoutTest do
           amount: 1000,
           vat_amount: 250
         },
-        risk_indicator: %SwedpayCheckout.Client.Psp.PaymentOrders.RiskIndicator{
+        risk_indicator: %SwedbankpayCheckout.Client.Psp.PaymentOrders.RiskIndicator{
           delivery_email_address: "olivia.nyhuus@payex.com",
           delivery_time_frame_indicator: "01",
           pre_order_date: "19801231",
@@ -240,12 +240,12 @@ defmodule SwedpayCheckoutTest do
         )
     end)
 
-    resp = SwedpayCheckout.Client.Psp.PaymentOrders.post(client, request_body)
+    resp = SwedbankpayCheckout.Client.Psp.PaymentOrders.post(client, request_body)
 
     Logger.debug(inspect(resp, pretty: true))
 
     {:ok,
-     %SwedpayCheckout.Client.Psp.PaymentOrders.PostResponse{
+     %SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse{
        :payment_order => payment_order,
        :operations => operations
      }} = resp
