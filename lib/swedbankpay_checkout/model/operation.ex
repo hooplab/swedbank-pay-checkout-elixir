@@ -13,5 +13,6 @@ defmodule SwedbankpayCheckout.Model.Operation do
     :content_type
   ]
 
+  @doc false
   def shell(), do: %__MODULE__{}
 end

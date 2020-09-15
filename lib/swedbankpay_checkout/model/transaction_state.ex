@@ -5,6 +5,7 @@ defmodule SwedbankpayCheckout.Model.TransactionState do
 
   @type t :: :INITIALIZED | :COMPLETED | :FAILED
 
+  @doc false
   def from_string(state) do
     case String.downcase(state) do
       "initialized" -> :INITIALIZED

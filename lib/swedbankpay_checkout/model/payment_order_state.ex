@@ -7,6 +7,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrderState do
 
   @type t :: :READY | :PENDING | :FAILED | :ABORTED
 
+  @doc false
   def from_string(state) do
     case String.downcase(state) do
       "ready" -> :READY

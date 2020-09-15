@@ -1,6 +1,12 @@
 defmodule SwedbankpayCheckout do
-  @test_base_url "https://api.externalintegration.payex.com/"
-  @live_base_url "https://api.payex.com/"
+  @moduledoc """
+  Root module for creating clients.
+  """
+
+  @spec test_base_url :: String.t()
+  def test_base_url, do: "https://api.externalintegration.payex.com/"
+  @spec live_base_url :: String.t()
+  def live_base_url, do: "https://api.payex.com/"
 
   @doc """
   Initializes a Tesla http client.

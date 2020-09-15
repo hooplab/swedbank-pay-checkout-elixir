@@ -1,6 +1,7 @@
 defmodule SwedbankpayCheckout.Model.Language do
   @type t :: :"sv-SE" | :"nb-NO" | :"en-US"
 
+  @doc false
   def from_string(lang) do
     case String.downcase(lang) do
       "sv-se" -> :"sv-SE"

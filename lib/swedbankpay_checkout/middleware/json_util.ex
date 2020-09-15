@@ -1,7 +1,5 @@
 defmodule SwedbankpayCheckout.Middleware.JsonUtil do
-  @moduledoc """
-  helper funcs to decamelize and camelize structs and maps
-  """
+  @moduledoc false
 
   # if struct
   @spec mapKeys(any(), (String.t() -> String.t())) :: any()

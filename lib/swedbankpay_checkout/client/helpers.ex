@@ -1,5 +1,5 @@
 defmodule SwedbankpayCheckout.Client.Helpers do
-  require Logger
+  @moduledoc false
 
   def evaluate_response({:ok, %Tesla.Env{status: status, body: body} = env}, mapping) do
     case mapping[status] do

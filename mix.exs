@@ -26,6 +26,7 @@ defmodule SwedbankpayCheckout.MixProject do
       {:tesla, "~> 1.3.0"},
       {:poison, "~> 3.1"},
       {:inflex, "~> 2.0.0"},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.2", only: :test}
     ]
   end
