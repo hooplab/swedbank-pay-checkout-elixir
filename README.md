@@ -3,6 +3,8 @@ A **unofficial** client for swedbank pay's checkout API.
 
 Work in progress.
 
+See: https://developer.swedbankpay.com/checkout/ for documentation
+
 
 ## Installation
 ```elixir
