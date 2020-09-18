@@ -22,4 +22,21 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
       }
     })
   end
+
+  @doc """
+  Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID
+  """
+  @spec get_payment_order(Tesla.Env.client(), String.t()) ::
+          {:ok, PaymentOrders.PostResponse.t()} | {:error, Tesla.Env.t()}
+  def get_payment_order(client, payment_order_id) do
+    Tesla.get(
+      client,
+      payment_order_id
+    )
+    |> Helpers.evaluate_response(%{
+      200 => %{
+        decode_as: PaymentOrders.RootResponse.shell()
+      }
+    })
+  end
 end
