@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.CreditCardItem do
+defmodule SwedbankpayCheckout.Model.CreditCardItem do
   @moduledoc """
   """
 

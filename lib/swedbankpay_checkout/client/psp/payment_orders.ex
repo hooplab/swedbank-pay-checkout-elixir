@@ -8,9 +8,9 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   @doc """
   Create a payment order, for displaying the payment menu view.
   """
-  @spec post(Tesla.Env.client(), PaymentOrders.PostRequest.t()) ::
+  @spec create_payment_order(Tesla.Env.client(), PaymentOrders.PostRequest.t()) ::
           {:ok, PaymentOrders.PostResponse.t()} | {:error, Tesla.Env.t()}
-  def post(client, request_body) do
+  def create_payment_order(client, request_body) do
     Tesla.post(
       client,
       "/psp/paymentorders",
@@ -18,7 +18,7 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
     )
     |> Helpers.evaluate_response(%{
       201 => %{
-        decode_as: PaymentOrders.PostResponse.shell()
+        decode_as: PaymentOrders.RootResponse.shell()
       }
     })
   end

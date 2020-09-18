@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse do
+defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.RootResponse do
   @moduledoc """
   """
 
@@ -8,8 +8,7 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse do
   See https://developer.swedbankpay.com/checkout/payment-menu
   """
   @type t :: %__MODULE__{
-          :payment_order =>
-            SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrderResponse.t(),
+          :payment_order => SwedbankpayCheckout.Model.PaymentOrderResponse.t(),
           :operations => [SwedbankpayCheckout.Model.Operation.t()]
         }
 
@@ -24,8 +23,7 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse do
   """
   def shell() do
     %__MODULE__{
-      payment_order:
-        SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrderResponse.shell(),
+      payment_order: SwedbankpayCheckout.Model.PaymentOrder.shell(),
       operations: [SwedbankpayCheckout.Model.Operation.shell()]
     }
   end
