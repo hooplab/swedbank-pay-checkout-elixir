@@ -1,9 +1,9 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.RootResponse do
+defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.OrderResponse do
   @moduledoc """
   """
 
   @typedoc """
-  root response for initiating a payment order.
+  root response for initiating a payment order or fetching an order
 
   See https://developer.swedbankpay.com/checkout/payment-menu
   """
@@ -18,9 +18,7 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.RootResponse do
     :operations
   ]
 
-  @doc """
-  Internal function used for response parsing.
-  """
+  @doc false
   def shell() do
     %__MODULE__{
       payment_order: SwedbankpayCheckout.Model.PaymentOrder.shell(),

@@ -56,7 +56,7 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.PaymentOrderR
           :urls => SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.Urls.t(),
           :payee_info => SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.PayeeInfo.t(),
           :payer => SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.Payer.t(),
-          :order_items => [SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.OrderItem.t()],
+          :order_items => [SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem.t()],
           :risk_indicator =>
             SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.RiskIndicator.t() | nil
         }

@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.OrderItem do
+defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem do
   @moduledoc """
   """
 
@@ -10,6 +10,9 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.OrderItem do
 
   @typedoc """
   .payment_order.order_item
+
+  This is shared between several modules.
+  The array of items being purchased with the order. Used to print on invoices if the payer chooses to pay with invoice, among other things. orderItems is required in all requests. In capture requests it should only contain the items to be captured from the order.
   """
   @type t :: %__MODULE__{
           :reference => String.t(),

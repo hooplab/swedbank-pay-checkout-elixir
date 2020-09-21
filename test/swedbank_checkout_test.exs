@@ -135,38 +135,55 @@ defmodule SwedbankpayCheckoutTest do
             "operations" => [
               %{
                 "method" => "PATCH",
-                "href" =>
-                  "https://ecom.externalintegration.payex.com/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+                "href" => "http://bears.gov/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
                 "rel" => "update-paymentorder-updateorder",
                 "contentType" => "application/json"
               },
               %{
                 "method" => "PATCH",
-                "href" =>
-                  "https://api.externalintegration.payex.com/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+                "href" => "http://bears.gov//paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
                 "rel" => "update-paymentorder-abort",
                 "contentType" => "application/json"
               },
               %{
                 "method" => "PATCH",
-                "href" =>
-                  "https://ecom.externalintegration.payex.com/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+                "href" => "http://bears.gov/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
                 "rel" => "update-paymentorder-expandinstrument",
                 "contentType" => "application/json"
               },
               %{
                 "method" => "GET",
-                "href" =>
-                  "https://ecom.externalintegration.payex.com/paymentmenu/5a17c24e-d459-4567-bbad-aa0f17a76119",
+                "href" => "http://bears.gov/paymentmenu/5a17c24e-d459-4567-bbad-aa0f17a76119",
                 "rel" => "redirect-paymentorder",
                 "contentType" => "text/html"
               },
               %{
                 "method" => "GET",
                 "href" =>
-                  "https://ecom.externalintegration.payex.com/paymentmenu/core/scripts/client/px.paymentmenu.client.js?token=5a17c24e-d459-4567-bbad-aa0f17a76119&culture=nb-NO",
+                  "http://bears.gov/paymentmenu/core/scripts/client/px.paymentmenu.client.js?token=5a17c24e-d459-4567-bbad-aa0f17a76119&culture=nb-NO",
                 "rel" => "view-paymentorder",
                 "contentType" => "application/javascript"
+              },
+              %{
+                "method" => "POST",
+                "href" =>
+                  "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/captures",
+                "rel" => "create-paymentorder-capture",
+                "contentType" => "application/json"
+              },
+              %{
+                "method" => "POST",
+                "href" =>
+                  "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/cancellations",
+                "rel" => "create-paymentorder-cancel",
+                "contentType" => "application/json"
+              },
+              %{
+                "method" => "POST",
+                "href" =>
+                  "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/reversals",
+                "rel" => "create-paymentorder-reversal",
+                "contentType" => "application/json"
               }
             ]
           },
@@ -177,7 +194,7 @@ defmodule SwedbankpayCheckoutTest do
 
   defp deep_assert_payment_order_response(
          {:ok,
-          %SwedbankpayCheckout.Client.Psp.PaymentOrders.RootResponse{
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.OrderResponse{
             :payment_order => payment_order,
             :operations => operations
           }}
@@ -240,7 +257,7 @@ defmodule SwedbankpayCheckoutTest do
             work_phone_number: "+4787654321",
             home_phone_number: "+4776543210"
           },
-          order_items: %SwedbankpayCheckout.Client.Psp.PaymentOrders.PostRequest.OrderItem{
+          order_items: %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem{
             reference: "P1",
             name: "Product1",
             type: :PRODUCT,
@@ -291,8 +308,260 @@ defmodule SwedbankpayCheckoutTest do
         id
       )
 
-    Logger.debug(inspect(resp, pretty: true))
-
     deep_assert_payment_order_response(resp)
+  end
+
+  test "POST cancellation" do
+    client = create_client()
+    id = "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce"
+
+    mock_payment_order_response(
+      :get,
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      200
+    )
+
+    {:ok, order_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.get_payment_order(
+        client,
+        id
+      )
+
+    # this is in camelcase, as this is what the api we are mocking _actually_ returns, as such we test our middlewares aswell
+    mock(fn
+      %{
+        method: :post,
+        url:
+          "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/cancellations"
+      } ->
+        json(
+          %{
+            "payment" => "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1",
+            "cancellation" => %{
+              "id" =>
+                "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1/cancellations/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+              "transaction" => %{
+                "id" =>
+                  "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1/transactions/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+                "type" => "Cancel",
+                "state" => "Completed",
+                "amount" => 5610,
+                "vatAmount" => 1122,
+                "description" => "Cancelling parts of the authorized payment",
+                "payeeReference" => "AB832"
+              }
+            }
+          },
+          status: 200
+        )
+    end)
+
+    request_body = %SwedbankpayCheckout.Client.Psp.PaymentOrders.CancelRequest{
+      payee_reference: "AB832",
+      description: "Cancelling parts of the authorized payment"
+    }
+
+    {:ok, cancel_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.cancel_payment_order(
+        client,
+        order_response,
+        request_body
+      )
+
+    assert cancel_response.cancellation.transaction.amount == 5610
+  end
+
+  test "POST capture" do
+    client = create_client()
+    id = "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce"
+
+    mock_payment_order_response(
+      :get,
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      200
+    )
+
+    {:ok, order_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.get_payment_order(
+        client,
+        id
+      )
+
+    # this is in camelcase, as this is what the api we are mocking _actually_ returns, as such we test our middlewares aswell
+    mock(fn
+      %{
+        method: :post,
+        url: "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/captures"
+      } ->
+        json(
+          %{
+            "payment" => "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1",
+            "capture" => %{
+              "id" =>
+                "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1/captures/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+              "transaction" => %{
+                "id" =>
+                  "/psp/paymentorders/payments/7e6cdfc3-1276-44e9-9992-7cf4419750e1/transactions/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+                "type" => "Capture",
+                "state" => "Completed",
+                "amount" => 15610,
+                "vatAmount" => 3122,
+                "description" => "Capturing the authorized payment",
+                "payeeReference" => "AB832",
+                "receiptReference" => "AB831"
+              }
+            }
+          },
+          status: 200
+        )
+    end)
+
+    request_body = %SwedbankpayCheckout.Client.Psp.PaymentOrders.CaptureRequest{
+      transaction: %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.TransactionRequest{
+        description: "Capturing the authorized payment",
+        amount: 1500,
+        vat_amount: 375,
+        payee_reference: "AB832",
+        receipt_reference: "AB831",
+        order_items: [
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem{
+            reference: "P1",
+            name: "Product1",
+            type: "PRODUCT",
+            class: "ProductGroup1",
+            item_url: "https://example.com/products/123",
+            image_url: "https://example.com/product123.jpg",
+            description: "Product 1 description",
+            discount_description: "Volume discount",
+            quantity: 4,
+            quantity_unit: "pcs",
+            unit_price: 300,
+            discount_price: 200,
+            vat_percent: 2500,
+            amount: 1000,
+            vat_amount: 250
+          },
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem{
+            reference: "P2",
+            name: "Product2",
+            type: "PRODUCT",
+            class: "ProductGroup1",
+            description: "Product 2 description",
+            quantity: 1,
+            quantity_unit: "pcs",
+            unit_price: 500,
+            vat_percent: 2500,
+            amount: 500,
+            vat_amount: 125
+          }
+        ]
+      }
+    }
+
+    {:ok, capture_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.capture_payment_order(
+        client,
+        order_response,
+        request_body
+      )
+
+    assert capture_response.capture.transaction.amount == 15610
+  end
+
+  test "POST reversal" do
+    client = create_client()
+    id = "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce"
+
+    mock_payment_order_response(
+      :get,
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      200
+    )
+
+    {:ok, order_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.get_payment_order(
+        client,
+        id
+      )
+
+    # this is in camelcase, as this is what the api we are mocking _actually_ returns, as such we test our middlewares aswell
+    mock(fn
+      %{
+        method: :post,
+        url: "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/reversals"
+      } ->
+        json(
+          %{
+            payment: "/psp/paymentorders/payments/09ccd29a-7c4f-4752-9396-12100cbfecce",
+            reversals: %{
+              id:
+                "/psp/paymentorders/payments/09ccd29a-7c4f-4752-9396-12100cbfecce/cancellations/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+              transaction: %{
+                id:
+                  "/psp/paymentorders/payments/09ccd29a-7c4f-4752-9396-12100cbfecce/transactions/ec2a9b09-601a-42ae-8e33-a5737e1cf177",
+                type: "Reversal",
+                state: "Completed",
+                amount: 15610,
+                vat_amount: 3122,
+                description: "Reversing the capture amount",
+                payee_reference: "ABC987",
+                receipt_reference: "ABC986"
+              }
+            }
+          },
+          status: 200
+        )
+    end)
+
+    request_body = %SwedbankpayCheckout.Client.Psp.PaymentOrders.ReverseRequest{
+      transaction: %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.TransactionRequest{
+        description: "Capturing the authorized payment",
+        amount: 1500,
+        vat_amount: 375,
+        payee_reference: "AB832",
+        receipt_reference: "AB831",
+        order_items: [
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem{
+            reference: "P1",
+            name: "Product1",
+            type: "PRODUCT",
+            class: "ProductGroup1",
+            item_url: "https://example.com/products/123",
+            image_url: "https://example.com/product123.jpg",
+            description: "Product 1 description",
+            discount_description: "Volume discount",
+            quantity: 4,
+            quantity_unit: "pcs",
+            unit_price: 300,
+            discount_price: 200,
+            vat_percent: 2500,
+            amount: 1000,
+            vat_amount: 250
+          },
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.Common.OrderItem{
+            reference: "P2",
+            name: "Product2",
+            type: "PRODUCT",
+            class: "ProductGroup1",
+            description: "Product 2 description",
+            quantity: 1,
+            quantity_unit: "pcs",
+            unit_price: 500,
+            vat_percent: 2500,
+            amount: 500,
+            vat_amount: 125
+          }
+        ]
+      }
+    }
+
+    {:ok, reversal_response} =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.reverse_payment_order(
+        client,
+        order_response,
+        request_body
+      )
+
+    assert reversal_response.reversals.transaction.amount == 15610
   end
 end
