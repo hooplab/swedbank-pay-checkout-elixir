@@ -10,7 +10,7 @@ See: https://developer.swedbankpay.com/checkout/ for documentation
 ```elixir
 def deps do
   [
-    {:swedbankpay_checkout, "~> 0.1.0"}
+    {:swedbankpay_checkout, "~> 0.2.0"}
   ]
 end
 ```
