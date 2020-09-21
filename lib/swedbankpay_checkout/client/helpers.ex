@@ -10,7 +10,10 @@ defmodule SwedbankpayCheckout.Client.Helpers do
         {:ok, env}
 
       nil ->
-        {:error, env}
+        {:error,
+         {"Could not find mapping for status #{status}, mapping exist for statuses: #{
+            inspect(Map.keys(mapping))
+          }", env}}
     end
   end
 

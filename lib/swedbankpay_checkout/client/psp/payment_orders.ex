@@ -9,7 +9,9 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   Create a payment order, for displaying the payment menu view.
   """
   @spec create_payment_order(Tesla.Env.client(), PaymentOrders.PostRequest.t()) ::
-          {:ok, PaymentOrders.PostResponse.t()} | {:error, Tesla.Env.t()}
+          {:ok, PaymentOrders.PostResponse.t()}
+          | {:error, Tesla.Env.t()}
+          | {:error, {String.t(), Tesla.Env.t()}}
   def create_payment_order(client, request_body) do
     Tesla.post(
       client,
@@ -27,7 +29,9 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID
   """
   @spec get_payment_order(Tesla.Env.client(), String.t()) ::
-          {:ok, PaymentOrders.PostResponse.t()} | {:error, Tesla.Env.t()}
+          {:ok, PaymentOrders.PostResponse.t()}
+          | {:error, Tesla.Env.t()}
+          | {:error, {String.t(), Tesla.Env.t()}}
   def get_payment_order(client, payment_order_id) do
     Tesla.get(
       client,

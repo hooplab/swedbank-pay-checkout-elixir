@@ -9,7 +9,9 @@ defmodule SwedbankpayCheckout.Client.Psp.Consumers do
   Create a consumer request, for displaying the checkin view.
   """
   @spec post(Tesla.Client.t(), Consumers.PostRequest.t()) ::
-          {:ok, Consumers.PostResponse.t()} | {:error, Tesla.Env.t()}
+          {:ok, Consumers.PostResponse.t()}
+          | {:error, Tesla.Env.t()}
+          | {:error, {String.t(), Tesla.Env.t()}}
   def post(client, request_body) do
     Tesla.post(
       client,
