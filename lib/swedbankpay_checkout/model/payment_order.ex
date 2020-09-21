@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrderResponse do
+defmodule SwedbankpayCheckout.Model.PaymentOrder do
   @moduledoc """
   """
 
@@ -19,19 +19,16 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrder
           :currency => SwedbankpayCheckout.Model.Currency.t(),
           :amount => Integer.t(),
           :vat_amount => Integer.t(),
-          :order_items =>
-            SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.t(),
+          :order_items => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :description => String.t() | nil,
           :initiating_system_user_agent => String.t(),
           :user_agent => String.t() | nil,
           :language => SwedbankpayCheckout.Model.Language.t(),
-          :urls => SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.t(),
-          :payee_info =>
-            SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.t(),
-          :payments => SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.t(),
-          :current_payment =>
-            SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.t(),
-          :items => [SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.Item.t()]
+          :urls => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :payee_info => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :payments => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :current_payment => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :items => [SwedbankpayCheckout.Model.Item.t()]
         }
   @derive Poison.Encoder
   defstruct [
@@ -58,19 +55,18 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrder
   @doc false
   def shell() do
     %__MODULE__{
-      order_items: SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.shell(),
-      urls: SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.shell(),
-      payee_info: SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.shell(),
-      payments: SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.shell(),
-      current_payment:
-        SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl.shell(),
-      items: [SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.Item.shell()]
+      order_items: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      urls: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      payee_info: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      payments: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      current_payment: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      items: [SwedbankpayCheckout.Model.Item.shell()]
     }
   end
 end
 
 defimpl Poison.Decoder,
-  for: SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.PaymentOrderResponse do
+  for: SwedbankpayCheckout.Model.PaymentOrder do
   def decode(%{language: language, currency: currency, state: state} = payment_order_response, _) do
     %{
       payment_order_response

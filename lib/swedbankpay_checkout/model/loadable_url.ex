@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders.PostResponse.LoadableUrl do
+defmodule SwedbankpayCheckout.Model.LoadableUrl do
   @moduledoc """
   """
 
