@@ -45,6 +45,25 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
     })
   end
 
+  @doc """
+  Get a payment order with expanded payer info, the payment_order_id should be the full id, with paths, not truncated to the UUID
+  """
+  @spec get_payment_order_with_payer(Tesla.Env.client(), String.t()) ::
+          {:ok, PaymentOrders.OrderResponse.t()}
+          | {:error, Tesla.Env.t()}
+          | {:error, {String.t(), Tesla.Env.t()}}
+  def get_payment_order_with_payer(client, payment_order_id) do
+    Tesla.get(
+      client,
+      "#{payment_order_id}?$expand=payer"
+    )
+    |> Helpers.evaluate_response(%{
+      200 => %{
+        decode_as: PaymentOrders.OrderResponse.shell()
+      }
+    })
+  end
+
   @typedoc false
   @typep payment_order_action :: :capture | :cancel | :reverse
 

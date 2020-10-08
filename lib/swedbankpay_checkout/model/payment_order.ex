@@ -26,6 +26,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
           :language => SwedbankpayCheckout.Model.Language.t(),
           :urls => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :payee_info => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :payer => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :payments => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :current_payment => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :items => [SwedbankpayCheckout.Model.Item.t()]
@@ -47,6 +48,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
     :language,
     :urls,
     :payee_info,
+    :payer,
     :payments,
     :current_payment,
     :items
@@ -58,6 +60,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
       order_items: SwedbankpayCheckout.Model.LoadableUrl.shell(),
       urls: SwedbankpayCheckout.Model.LoadableUrl.shell(),
       payee_info: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      payer: SwedbankpayCheckout.Model.Payer.shell(),
       payments: SwedbankpayCheckout.Model.LoadableUrl.shell(),
       current_payment: SwedbankpayCheckout.Model.LoadableUrl.shell(),
       items: [SwedbankpayCheckout.Model.Item.shell()]
