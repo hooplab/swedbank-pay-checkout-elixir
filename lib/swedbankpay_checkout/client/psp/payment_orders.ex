@@ -27,35 +27,24 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   end
 
   @doc """
-  Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID
+  Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID.
+  Expand any subfields listed in the expand parameter.
   """
-  @spec get_payment_order(Tesla.Env.client(), String.t()) ::
+  @spec get_payment_order(Tesla.Env.client(), String.t(), list(Atom.t()) | list(String.t())) ::
           {:ok, PaymentOrders.OrderResponse.t()}
           | {:error, Tesla.Env.t()}
           | {:error, {String.t(), Tesla.Env.t()}}
-  def get_payment_order(client, payment_order_id) do
+  def get_payment_order(client, payment_order_id, expand \\ []) do
+    url = case expand do
+      [] -> payment_order_id
+      [head | _] when is_atom(head) ->
+        "#{payment_order_id}?$expand=#{expand |> Enum.map(&(Atom.to_string(&1))) |> Enum.join(",")}"
+      [head | _] when is_bitstring(head) ->
+        "#{payment_order_id}?$expand=#{expand |> Enum.join(",")}"
+    end
     Tesla.get(
       client,
-      payment_order_id
-    )
-    |> Helpers.evaluate_response(%{
-      200 => %{
-        decode_as: PaymentOrders.OrderResponse.shell()
-      }
-    })
-  end
-
-  @doc """
-  Get a payment order with expanded payer info, the payment_order_id should be the full id, with paths, not truncated to the UUID
-  """
-  @spec get_payment_order_with_payer(Tesla.Env.client(), String.t()) ::
-          {:ok, PaymentOrders.OrderResponse.t()}
-          | {:error, Tesla.Env.t()}
-          | {:error, {String.t(), Tesla.Env.t()}}
-  def get_payment_order_with_payer(client, payment_order_id) do
-    Tesla.get(
-      client,
-      "#{payment_order_id}?$expand=payer"
+      url
     )
     |> Helpers.evaluate_response(%{
       200 => %{
