@@ -192,6 +192,140 @@ defmodule SwedbankpayCheckoutTest do
     end)
   end
 
+  defp mock_payment_order_with_expand_response(method, url, status) do
+    # this is in camelcase, as this is what the api we are mocking _actually_ returns, as such we test our middlewares as well
+    mock(fn
+      %{method: m, url: u} when m == method and u == url ->
+        json(
+          %{
+            "paymentOrder": %{
+              "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+              "created": "2020-09-29T11:04:09.4831461Z",
+              "updated": "2020-09-29T11:04:13.6839718Z",
+              "operation": "Purchase",
+              "state": "Ready",
+              "currency": "NOK",
+              "amount": 10000,
+              "vatAmount": 0,
+              "remainingCaptureAmount": 10000,
+              "remainingCancellationAmount": 10000,
+              "orderItems": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/orderitems"
+              },
+              "description": "giftcard purchase",
+              "initiatingSystemUserAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+              "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+              "language": "nb-NO",
+              "urls": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/urls"
+              },
+              "payeeInfo": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/payeeInfo"
+              },
+              "payer": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/payers",
+                "reference": "377cc3cc-0453-4567-84c2-7c65014fc9d5",
+                "name": "Olivia Nyhuus",
+                "email": "olivia.nyhuus@payex.com",
+                "msisdn": "+4798765432",
+                "gender": "Female",
+                "birthYear": "1967",
+                "hashedFields": %{
+                  "emailHash": "3fcd660b34968aa1be7647ec6d7527032de32ce5",
+                  "msisdnHash": "9e4479f5a574272c3e439a0015e276a723b8b1a6",
+                  "socialSecurityNumberHash": "2a56099d6d0b9b0f922e8eea6f31a14edf5a1873"
+                },
+                "shippingAddress": %{
+                  "addressee": "Olivia Nyhuus",
+                  "coAddress": "",
+                  "streetAddress": "Eksempelgata 1",
+                  "zipCode": "1642",
+                  "city": "Oslo",
+                  "countryCode": "NO"
+                },
+                "device": %{
+                  "detectionAccuracy": 100,
+                  "ipAddress": "85.19.212.202",
+                  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+                  "deviceType": "Desktop",
+                  "hardwareFamily": "Macintosh",
+                  "hardwareName": "Macintosh",
+                  "hardwareVendor": "Apple",
+                  "platformName": "macOS",
+                  "platformVendor": "Apple",
+                  "platformVersion": "10.15",
+                  "browserName": "Firefox",
+                  "browserVendor": "Mozilla",
+                  "browserVersion": "80.0"
+                }
+              },
+              "payments": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/payments",
+                "paymentList": [
+                  %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4",
+                    "instrument": "Vipps",
+                    "created": "2020-09-29T11:04:13.7690375Z"
+                  }
+                ]
+              },
+              "currentPayment": %{
+                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/currentpayment"
+              },
+              "items": [
+                %{
+                  "creditCard": %{
+                    "cardBrands": [
+                      "Visa",
+                      "MasterCard"
+                    ]
+                  }
+                }
+              ]
+            },
+            "operations": [
+              %{
+                "method": "POST",
+                "href": "https://api.externalintegration.payex.com/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/cancellations",
+                "rel": "create-paymentorder-cancel",
+                "contentType": "application/json"
+              },
+              %{
+                "method": "POST",
+                "href": "https://api.externalintegration.payex.com/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/captures",
+                "rel": "create-paymentorder-capture",
+                "contentType": "application/json"
+              },
+              %{
+                "method": "POST",
+                "href": "https://api.externalintegration.payex.com/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/cancellations",
+                "rel": "create-cancellation"
+              },
+              %{
+                "method": "POST",
+                "href": "https://api.externalintegration.payex.com/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/captures",
+                "rel": "create-capture"
+              },
+              %{
+                "method": "GET",
+                "href": "https://ecom.externalintegration.payex.com/vipps/core/scripts/client/px.vipps.client.js?token=325fc5a2927a969c047c08dcee247263cee2459a639db5d6ff8e3eb8b85f3b03&Culture=nb-NO",
+                "rel": "view-payment",
+                "contentType": "application/javascript"
+              },
+              %{
+                "method": "GET",
+                "href": "https://api.externalintegration.payex.com/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/paid",
+                "rel": "paid-paymentorder",
+                "contentType": "application/json"
+              }
+            ]
+          },
+          status: status
+        )
+    end)
+  end
+
+
   defp deep_assert_payment_order_response(
          {:ok,
           %SwedbankpayCheckout.Client.Psp.PaymentOrders.OrderResponse{
@@ -214,6 +348,27 @@ defmodule SwedbankpayCheckoutTest do
     assert payment_order.current_payment.id != nil
     assert hd(payment_order.items).credit_card.card_brands != nil
     assert hd(payment_order.items).credit_card.card_brands != []
+  end
+
+    defp deep_assert_payment_order_response_expansion(
+         {:ok,
+          %SwedbankpayCheckout.Client.Psp.PaymentOrders.OrderResponse{
+            :payment_order => payment_order,
+            :operations => operations
+          }}
+       ) do
+    # test all deep structures to make sure we are parsing them into structures correctly
+    assert payment_order.payer.name === "Olivia Nyhuus"
+    assert payment_order.payer.email === "olivia.nyhuus@payex.com"
+    assert payment_order.payer.msisdn === "+4798765432"
+    assert payment_order.payer.shipping_address.addressee === "Olivia Nyhuus"
+    assert payment_order.payer.shipping_address.street_address === "Eksempelgata 1"
+    assert payment_order.payer.device.ip_address === "85.19.212.202"
+    assert payment_order.payer.device.detection_accuracy === 100
+
+    assert is_list(payment_order.payments.payment_list)
+    assert length(payment_order.payments.payment_list) === 1
+    assert hd(payment_order.payments.payment_list).instrument === "Vipps"
   end
 
   test "POST payment_order" do
@@ -298,7 +453,7 @@ defmodule SwedbankpayCheckoutTest do
 
     mock_payment_order_response(
       :get,
-      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce?$expand=",
       200
     )
 
@@ -311,13 +466,35 @@ defmodule SwedbankpayCheckoutTest do
     deep_assert_payment_order_response(resp)
   end
 
+  test "GET payment_order with expand" do
+    client = create_client()
+
+    id = "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce"
+
+    mock_payment_order_with_expand_response(
+      :get,
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce?$expand=payer,payments",
+      200
+    )
+
+    resp =
+      SwedbankpayCheckout.Client.Psp.PaymentOrders.get_payment_order(
+        client,
+        id,
+        [:payer, :payments]
+      )
+
+    deep_assert_payment_order_response(resp)
+    deep_assert_payment_order_response_expansion(resp)
+  end
+
   test "POST cancellation" do
     client = create_client()
     id = "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce"
 
     mock_payment_order_response(
       :get,
-      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce?$expand=",
       200
     )
 
@@ -377,7 +554,7 @@ defmodule SwedbankpayCheckoutTest do
 
     mock_payment_order_response(
       :get,
-      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce?$expand=",
       200
     )
 
@@ -474,7 +651,7 @@ defmodule SwedbankpayCheckoutTest do
 
     mock_payment_order_response(
       :get,
-      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce",
+      "http://bears.gov/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce?$expand=",
       200
     )
 

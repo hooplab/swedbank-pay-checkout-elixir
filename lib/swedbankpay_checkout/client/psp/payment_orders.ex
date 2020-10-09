@@ -6,6 +6,8 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   alias SwedbankpayCheckout.Client.Helpers
   alias SwedbankpayCheckout.Model.Operation
 
+  @type payment_order_expansion :: :payer | :payments
+
   @doc """
   Create a payment order, for displaying the payment menu view.
   """
@@ -27,16 +29,17 @@ defmodule SwedbankpayCheckout.Client.Psp.PaymentOrders do
   end
 
   @doc """
-  Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID
+  Get a payment order, the payment_order_id should be the full id, with paths, not truncated to the UUID.
+  Expand any subfields listed in the expand parameter.
   """
-  @spec get_payment_order(Tesla.Env.client(), String.t()) ::
+  @spec get_payment_order(Tesla.Env.client(), String.t(), list(payment_order_expansion)) ::
           {:ok, PaymentOrders.OrderResponse.t()}
           | {:error, Tesla.Env.t()}
           | {:error, {String.t(), Tesla.Env.t()}}
-  def get_payment_order(client, payment_order_id) do
+  def get_payment_order(client, payment_order_id, expand \\ []) do
     Tesla.get(
       client,
-      payment_order_id
+      "#{payment_order_id}?$expand=#{expand |> Enum.map(&(Atom.to_string(&1))) |> Enum.join(",")}"
     )
     |> Helpers.evaluate_response(%{
       200 => %{
