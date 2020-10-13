@@ -9,7 +9,7 @@ defmodule SwedbankpayCheckout.Client.Helpers do
 
     case mapping[status] do
       %{decode_as: decode_as} ->
-        {:ok, Poison.Decode.decode(body, as: decode_as)}
+        {:ok, Poison.Decode.transform(body, %{as: decode_as})}
 
       false ->
         {:ok, env}

@@ -4,7 +4,7 @@ defmodule SwedbankpayCheckout.MixProject do
   def project do
     [
       app: :swedbankpay_checkout,
-      version: "0.2.1",
+      version: "0.2.2",
       elixir: "~> 1.10",
       start_permanent: Mix.env() == :prod,
       description: description(),
@@ -24,7 +24,7 @@ defmodule SwedbankpayCheckout.MixProject do
   defp deps do
     [
       {:tesla, "~> 1.3.0"},
-      {:poison, "~> 3.1"},
+      {:poison, "~> 4.0"},
       {:inflex, "~> 2.0.0"},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
       {:jason, "~> 1.2", only: :test}
