@@ -1,4 +1,4 @@
-defmodule SwedbankpayCheckout.Model.Payments do
+defmodule SwedbankpayCheckout.Model.Transactions do
   @moduledoc """
   """
 
@@ -7,18 +7,18 @@ defmodule SwedbankpayCheckout.Model.Payments do
   """
   @type t :: %__MODULE__{
           :id => String.t(),
-          :payment_list => []
+          :transaction_list => []
         }
   @derive Poison.Encoder
   defstruct [
     :id,
-    :payment_list
+    :transaction_list
   ]
 
   @doc false
   def shell() do
     %__MODULE__{
-      payment_list: [SwedbankpayCheckout.Model.PaymentShort.shell()],
+      transaction_list: [SwedbankpayCheckout.Model.Transaction.shell()],
     }
   end
 end

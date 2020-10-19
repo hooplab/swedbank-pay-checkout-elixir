@@ -19,6 +19,8 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
           :currency => SwedbankpayCheckout.Model.Currency.t(),
           :amount => Integer.t(),
           :vat_amount => Integer.t(),
+          :remaining_capture_amount => Integer.t() | nil,
+          :remaining_cancellation_amount => Integer.t() | nil,
           :order_items => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :description => String.t() | nil,
           :initiating_system_user_agent => String.t(),
@@ -28,7 +30,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
           :payee_info => SwedbankpayCheckout.Model.LoadableUrl.t(),
           :payer => SwedbankpayCheckout.Model.Payer.t() | SwedbankpayCheckout.Model.LoadableUrl.t(),
           :payments => SwedbankpayCheckout.Model.Payments.t() | SwedbankpayCheckout.Model.LoadableUrl.t(),
-          :current_payment => SwedbankpayCheckout.Model.LoadableUrl.t(),
+          :current_payment => SwedbankpayCheckout.Model.CurrentPayment.t() | SwedbankpayCheckout.Model.LoadableUrl.t(),
           :items => [SwedbankpayCheckout.Model.Item.t()]
         }
   @derive Poison.Encoder
@@ -41,6 +43,8 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
     :currency,
     :amount,
     :vat_amount,
+    :remaining_capture_amount,
+    :remaining_cancellation_amount,
     :order_items,
     :description,
     :initiating_system_user_agent,
@@ -62,7 +66,7 @@ defmodule SwedbankpayCheckout.Model.PaymentOrder do
       payee_info: SwedbankpayCheckout.Model.LoadableUrl.shell(),
       payer: SwedbankpayCheckout.Model.Payer.shell(),
       payments: SwedbankpayCheckout.Model.Payments.shell(),
-      current_payment: SwedbankpayCheckout.Model.LoadableUrl.shell(),
+      current_payment: SwedbankpayCheckout.Model.CurrentPayment.shell(),
       items: [SwedbankpayCheckout.Model.Item.shell()]
     }
   end
