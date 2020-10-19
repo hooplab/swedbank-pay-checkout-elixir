@@ -270,7 +270,79 @@ defmodule SwedbankpayCheckoutTest do
                 ]
               },
               "currentPayment": %{
-                "id": "/psp/paymentorders/09ccd29a-7c4f-4752-9396-12100cbfecce/currentpayment"
+                "id": "/psp/paymentorders/a6826722-0bd9-4884-39a5-08d86397fb0a/currentpayment",
+                "menuElementName": "Vipps",
+                "payment": %{
+                  "corporationId": "d9af91e9-b376-4102-8063-67fc2468280d",
+                  "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4",
+                  "number": 42100044292,
+                  "created": "2020-09-29T11:04:13.6240096Z",
+                  "updated": "2020-09-29T11:04:15.9679644Z",
+                  "instrument": "Vipps",
+                  "operation": "Purchase",
+                  "intent": "Authorization",
+                  "state": "Ready",
+                  "currency": "NOK",
+                  "prices": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/prices",
+                    "priceList": [
+                      %{
+                        "type": "Vipps",
+                        "amount": 10000,
+                        "vatAmount": 0
+                      }
+                    ]
+                  },
+                  "amount": 10000,
+                  "remainingCaptureAmount": 10000,
+                  "remainingCancellationAmount": 10000,
+                  "description": "giftcard purchase",
+                  "payerReference": "377cc3cc-0453-4567-84c2-7c65014fc9d5",
+                  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:80.0) Gecko/20100101 Firefox/80.0",
+                  "language": "nb-NO",
+                  "transactions": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/transactions",
+                    "transactionList": [
+                      %{
+                        "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/transactions/cd25e5ff-b34b-47c5-6071-08d8639bc234",
+                        "created": "2020-09-29T11:04:13.87906Z",
+                        "updated": "2020-09-29T11:04:15.9679648Z",
+                        "type": "Authorization",
+                        "state": "Completed",
+                        "number": 42100044293,
+                        "amount": 10000,
+                        "vatAmount": 0,
+                        "description": "giftcard purchase",
+                        "payeeReference": "9GQmJ83vG462xdE4TiRx5B",
+                        "isOperational": false,
+                        "operations": []
+                      }
+                    ]
+                  },
+                  "authorizations": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/authorizations"
+                  },
+                  "urls": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/urls",
+                    "hostUrls": [
+                      "https://maaemo.givn.test:443/"
+                    ],
+                    "completeUrl": "https://maaemo.givn.test/complete?token=SFMyNTY.g2gDdAAAAAFkAAtjaGVja291dF9pZG0AAAAkMzJmOTYyYWItMzRlYi00ZjA0LThiMTktNTJhZDRhMWU4NDVlbgYAzbSI2XQBYgABUYA.DNDAOJKC7nXjJpOUysjEb71-G8BV2ckcYv2u6YKYQB8",
+                    "cancelUrl": "https://maaemo.givn.test/",
+                    "callbackUrl": "http://psp.externalintegration.payex.host/psp/paymentorders/a6826722-0bd9-4884-39a5-08d86397fb0a/InstrumentCallback",
+                    "termsOfServiceUrl": "https://vg.no/"
+                  },
+                  "payeeInfo": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/payeeinfo",
+                    "payeeId": "2b852312-5a0a-4965-b367-bee869ce3a9c",
+                    "payeeReference": "9GQmJ83vG462xdE4TiRx5B",
+                    "payeeName": "1",
+                    "orderReference": "9GQmJ83vG462xdE4TiRx5B"
+                  },
+                  "metadata": %{
+                    "id": "/psp/vipps/payments/d6f75c57-127c-4ba5-d313-08d8639bc1b4/metadata"
+                  }
+                },
               },
               "items": [
                 %{
@@ -369,6 +441,15 @@ defmodule SwedbankpayCheckoutTest do
     assert is_list(payment_order.payments.payment_list)
     assert length(payment_order.payments.payment_list) === 1
     assert hd(payment_order.payments.payment_list).instrument === "Vipps"
+
+    assert payment_order.current_payment.menu_element_name === "Vipps"
+    assert payment_order.current_payment.payment.number === 42100044292
+    assert payment_order.current_payment.payment.intent === "Authorization"
+    assert payment_order.current_payment.payment.amount === 10000
+    assert is_list(payment_order.current_payment.payment.transactions.transaction_list)
+    assert length(payment_order.current_payment.payment.transactions.transaction_list) === 1
+    assert hd(payment_order.current_payment.payment.transactions.transaction_list).state === :COMPLETED
+
   end
 
   test "POST payment_order" do
